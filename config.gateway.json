@@ -1,0 +1,185 @@
+{     
+    "firewall": {         
+        "modify": {             
+            "mlvd-nl1": {
+                "rule": {
+                    "10": {
+                        "action": "modify",
+                        "description": "Mullvad mlvd-nl1 Tunnel",
+                        "modify": {
+                            "table": "1"
+                        },
+                        "source": {
+                            "address": "192.168.10.0/24"
+                        }
+                    }
+                }
+            },
+            "mlvd-it4": {
+                "rule": {
+                    "20": {
+                        "action": "modify",
+                        "description": "Mullvad mlvd-it4 Tunnel",
+                        "modify": {
+                            "table": "2"
+                        },
+                        "source": {
+                            "address": "192.168.20.0/24"
+                        }
+                    }
+                }
+            }
+        },
+        "source-validation": "disable"
+    },
+    "interfaces": {         
+        "ethernet": {             
+            "eth1": {               
+                "vif": {
+                    "10": {
+                        "address": [
+                            "192.168.10.1/24"
+                        ],
+                        "firewall": {
+                            "in": {
+                                "ipv6-name": "LANv6_IN",
+                                "modify": "mlvd-nl1",
+                                "name": "LAN_IN"
+                            },
+                            "local": {
+                                "ipv6-name": "LANv6_LOCAL",
+                                "name": "LAN_LOCAL"
+                            },
+                            "out": {
+                                "ipv6-name": "LANv6_OUT",
+                                "name": "LAN_OUT"
+                            }
+                        }
+                    },
+                    "20": {
+                        "address": [
+                            "192.168.20.1/24"
+                        ],
+                        "firewall": {
+                            "in": {
+                                "ipv6-name": "LANv6_IN",
+                                "modify": "mlvd-it4",
+                                "name": "LAN_IN"
+                            },
+                            "local": {
+                                "ipv6-name": "LANv6_LOCAL",
+                                "name": "LAN_LOCAL"
+                            },
+                            "out": {
+                                "ipv6-name": "LANv6_OUT",
+                                "name": "LAN_OUT"
+                            }
+                        }
+                    }
+                }
+            }         
+        },         
+        "wireguard": {             
+            "wg0": {
+                "description": "mlvd-nl1",
+                "address": "10.70.255.40/32",
+                "listen-port": "51820",
+                "private-key": "<PEER PUBLIC KEY>",
+                "route-allowed-ips": "false",
+                "peer": {
+                    "<PEER PUBLIC KEY>": {
+                        "allowed-ips": "0.0.0.0/0",
+                        "endpoint": "193.32.249.66:51820",
+                        "persistent-keepalive": "60"
+                    }
+                }
+            },
+            "wg1": {
+                "description": "mlvd-it4",
+                "address": "10.71.10.240/32",
+                "listen-port": "51821",
+                "private-key": "<PEER PUBLIC KEY>",
+                "route-allowed-ips": "false",
+                "peer": {
+                    "<PEER PUBLIC KEY>": {
+                        "allowed-ips": "0.0.0.0/0",
+                        "endpoint": "91.193.5.2:51820",
+                        "persistent-keepalive": "60"
+                    }
+                }
+            }
+        }
+    },
+    "service": {         
+        "nat": {             
+            "rule": {                 
+                "5000": {
+                    "description": "Mullvad NL-1 Clients",
+                    "log": "disable",
+                    "outbound-interface": "wg0",
+                    "source": {
+                            "address": "192.168.10.0/24"
+                    },
+                    "type": "masquerade"
+                },
+                "5001": {
+                    "description": "Mullvad IT-4 Clients",
+                    "log": "disable",
+                    "outbound-interface": "wg1",
+                    "source": {
+                            "address": "192.168.20.0/24"
+                    },
+                    "type": "masquerade"
+                }         
+            }         
+        }     
+    },     
+    "protocols": {       
+        "static": {         
+            "table": {           
+                "1": {
+                    "interface-route": {               
+                        "0.0.0.0/0": {                 
+                            "next-hop-interface":  {
+                                "wg0": "''"
+                            }                            
+                        }             
+                    },
+                    "route": {
+                        "0.0.0.0/0": {
+                            "blackhole": {
+                                "distance": "1"
+                            }
+                        },
+                        "192.168.1.0/24": {
+                            "next-hop": {
+                                "192.168.1.1": "''"
+                            }
+                        }
+                    }
+                },
+                "2": {
+                    "interface-route": {               
+                        "0.0.0.0/0": {                 
+                            "next-hop-interface":  {
+                                "wg1": "''"
+                            }                            
+                        }             
+                    },
+                    "route": {
+                        "0.0.0.0/0": {
+                            "blackhole": {
+                                "distance": "1"
+                            }
+                        },
+                        "192.168.1.0/24": {
+                            "next-hop": {
+                                "192.168.1.1": "''"
+                            }
+                        }
+                    }
+                }
+            }       
+        }     
+    }
+}
