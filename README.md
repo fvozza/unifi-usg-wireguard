@@ -18,7 +18,7 @@ Follow the instructions at https://github.com/WireGuard/wireguard-vyatta-ubnt
 
 At this point you should be able to run wg command:
 
-```
+```ash
 francesco@UnifiGW:~$ sudo wg --help
 Usage: wg <cmd> [<args>]
 
@@ -250,6 +250,37 @@ You can adjust this `config.gateway.json` to your needs. Before deploying it to 
 In order to deploy the configuration you have to go to the `devices` section of your Unifi controller UI, click on your Unifi GW and, under the settings tab, do a `force provision`.
 
 ![Controller Network Settings](img/controller_provision.png)
+
+After provisioning, ssh to your gateway and you should be able to see the tunnels up and running:
+
+```ash
+
+francesco@UnifiGW:~$ sudo wg
+interface: wg0
+  public key: wwBKzez+NwRX1s28zzQsECVXVoh8jnJo5rKOCkm57Tw=
+  private key: (hidden)
+  listening port: 51820
+
+peer: UrQiI9ISdPPzd4ARw1NHOPKKvKvxUhjwRjaI0JpJFgM=
+  endpoint: 193.32.249.66:51820
+  allowed ips: 0.0.0.0/0
+  latest handshake: 1 minute, 35 seconds ago
+  transfer: 11.13 GiB received, 35.79 MiB sent
+  persistent keepalive: every 1 minute
+
+interface: wg1
+  public key: m8xKFqqwl6BQWSoVALr4UoCPQTV/N+Vq6DBw+XMaHUI=
+  private key: (hidden)
+  listening port: 51821
+
+peer: CJMsEa5/skjmYPc+lvHnmLD1dpSFoRmv/FE815oBbRE=
+  endpoint: 91.193.5.2:51820
+  allowed ips: 0.0.0.0/0
+  latest handshake: 1 minute, 54 seconds ago
+  transfer: 27.90 MiB received, 23.21 MiB sent
+  persistent keepalive: every 1 minute
+
+```
 
 ## Create a network
 
