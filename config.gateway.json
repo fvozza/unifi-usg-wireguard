@@ -84,7 +84,7 @@
                 "description": "mlvd-nl1",
                 "address": "10.70.255.40/32",
                 "listen-port": "51820",
-                "private-key": "<PEER PUBLIC KEY>",
+                "private-key": "<YOUR PRIVATE KEY>",
                 "route-allowed-ips": "false",
                 "peer": {
                     "<PEER PUBLIC KEY>": {
@@ -98,7 +98,7 @@
                 "description": "mlvd-it4",
                 "address": "10.71.10.240/32",
                 "listen-port": "51821",
-                "private-key": "<PEER PUBLIC KEY>",
+                "private-key": "<YOUR PRIVATE KEY>",
                 "route-allowed-ips": "false",
                 "peer": {
                     "<PEER PUBLIC KEY>": {
